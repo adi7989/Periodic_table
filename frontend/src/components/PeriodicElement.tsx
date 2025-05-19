@@ -29,15 +29,15 @@ const PeriodicElement = ({ element, onClick }: PeriodicElementProps) => {
   return (
     <motion.div
       className={cn(
-        "relative w-20 h-20 m-1 cursor-pointer select-none rounded-md overflow-hidden", // Adjusted margin and added overflow-hidden
+        "relative w-full h-full cursor-pointer select-none rounded-md overflow-hidden", // Removed fixed width/height to fit grid
         getBgColorClass(element.category) // Use dynamic background color class
       )}
-      whileHover={{ scale: 1.1, zIndex: 10, boxShadow: "0 10px 20px rgba(0,0,0,0.2)" }} // Enhanced hover effect
-      whileTap={{ scale: 0.9 }}
+      whileHover={{ scale: 1.05, zIndex: 10, boxShadow: "0 5px 10px rgba(0,0,0,0.2)" }} // Reduced scale for grid layout
+      whileTap={{ scale: 0.95 }}
       onClick={() => onClick(element)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      initial={{ opacity: 0, scale: 0.8 }} // Initial animation
+      initial={{ opacity: 0, scale: 0.9 }} // Initial animation
       animate={{ opacity: 1, scale: 1 }} // Entry animation
       transition={{ duration: 0.3 }}
     >
@@ -46,12 +46,12 @@ const PeriodicElement = ({ element, onClick }: PeriodicElementProps) => {
       >
         <div className="flex justify-between items-start text-xs font-bold">
           <span>{element.atomicNumber}</span>
-          <span>{parseFloat(element.atomicMass).toFixed(2)}</span> {/* Format atomic mass */}
+          <span className="text-[0.65rem]">{parseFloat(element.atomicMass).toFixed(1)}</span> {/* Smaller font for atomic mass */}
         </div>
         <div className="text-center">
-          <span className="text-xl font-bold">{element.symbol}</span>
+          <span className="text-lg font-bold">{element.symbol}</span>
         </div>
-        <div className="text-center text-xs truncate opacity-80"> {/* Added opacity */}
+        <div className="text-center text-[0.65rem] truncate opacity-80"> {/* Smaller font for name */}
           {element.name}
         </div>
       </div>

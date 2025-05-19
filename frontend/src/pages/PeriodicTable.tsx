@@ -112,28 +112,155 @@ const PeriodicTable = () => {
           </TabsList>
 
           <TabsContent value="grid" className="mt-6">
-            <motion.div
-              className="flex flex-wrap justify-center gap-1" // Reverted to flexbox layout
-              variants={{
-                hidden: { opacity: 0 },
-                show: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.05
+            <div className="overflow-x-auto pb-4">
+              <motion.div
+                className="periodic-table-grid min-w-[1000px]"
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.05
+                    }
                   }
-                }
-              }}
-              initial="hidden"
-              animate="show"
-            >
-              {filteredElements.map(element => ( // Iterate through filtered elements
-                <PeriodicElement
-                  key={element.atomicNumber}
-                  element={element}
-                  onClick={handleElementClick}
-                />
-              ))}
-            </motion.div>
+                }}
+                initial="hidden"
+                animate="show"
+              >
+                {/* Period numbers */}
+                <div className="period-labels">
+                  {[1, 2, 3, 4, 5, 6, 7].map(period => (
+                    <div key={`period-${period}`} className="period-number">
+                      {period}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Group numbers */}
+                <div className="group-labels">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(group => (
+                    <div key={`group-${group}`} className="group-number">
+                      {group}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Elements grid */}
+                <div className="elements-container">
+                  {/* Create a grid with all possible positions */}
+                  {Array.from({ length: 7 }, (_, periodIndex) => {
+                    const period = periodIndex + 1;
+                    return Array.from({ length: 18 }, (_, groupIndex) => {
+                      const group = groupIndex + 1;
+                      
+                      // Find element at this position
+                      const element = elements.find(el => 
+                        el.period === period && el.group === group
+                      );
+                      
+                      // Special case for lanthanides (period 6, group 3)
+                      if (period === 6 && group === 3) {
+                        return (
+                          <div key={`${period}-${group}`} className="element-cell lanthanide-marker">
+                            <div className="text-xs text-center">57-71</div>
+                          </div>
+                        );
+                      }
+                      
+                      // Special case for actinides (period 7, group 3)
+                      if (period === 7 && group === 3) {
+                        return (
+                          <div key={`${period}-${group}`} className="element-cell actinide-marker">
+                            <div className="text-xs text-center">89-103</div>
+                          </div>
+                        );
+                      }
+                      
+                      // If element exists at this position and matches filter
+                      if (element && filteredElements.some(e => e.atomicNumber === element.atomicNumber)) {
+                        return (
+                          <div 
+                            key={`${period}-${group}`} 
+                            className="element-cell"
+                            style={{ gridRow: period, gridColumn: group }}
+                          >
+                            <PeriodicElement
+                              element={element}
+                              onClick={handleElementClick}
+                            />
+                          </div>
+                        );
+                      }
+                      
+                      // If element exists but doesn't match filter
+                      if (element) {
+                        return (
+                          <div 
+                            key={`${period}-${group}`} 
+                            className="element-cell dimmed"
+                            style={{ gridRow: period, gridColumn: group }}
+                          >
+                            <PeriodicElement
+                              element={element}
+                              onClick={handleElementClick}
+                            />
+                          </div>
+                        );
+                      }
+                      
+                      // Empty cell
+                      return (
+                        <div 
+                          key={`${period}-${group}`} 
+                          className="element-cell empty"
+                          style={{ gridRow: period, gridColumn: group }}
+                        />
+                      );
+                    });
+                  }).flat()}
+                </div>
+                
+                {/* Lanthanides row (period 8, groups 3-16) */}
+                <div className="lanthanides-row">
+                  <div className="lanthanides-label">La</div>
+                  {elements
+                    .filter(el => el.category === "lanthanide")
+                    .sort((a, b) => a.atomicNumber - b.atomicNumber)
+                    .map(element => (
+                      <div 
+                        key={`lanthanide-${element.atomicNumber}`} 
+                        className={`element-cell ${!filteredElements.some(e => e.atomicNumber === element.atomicNumber) ? 'dimmed' : ''}`}
+                      >
+                        <PeriodicElement
+                          element={element}
+                          onClick={handleElementClick}
+                        />
+                      </div>
+                    ))
+                  }
+                </div>
+                
+                {/* Actinides row (period 9, groups 3-16) */}
+                <div className="actinides-row">
+                  <div className="actinides-label">Ac</div>
+                  {elements
+                    .filter(el => el.category === "actinide")
+                    .sort((a, b) => a.atomicNumber - b.atomicNumber)
+                    .map(element => (
+                      <div 
+                        key={`actinide-${element.atomicNumber}`} 
+                        className={`element-cell ${!filteredElements.some(e => e.atomicNumber === element.atomicNumber) ? 'dimmed' : ''}`}
+                      >
+                        <PeriodicElement
+                          element={element}
+                          onClick={handleElementClick}
+                        />
+                      </div>
+                    ))
+                  }
+                </div>
+              </motion.div>
+            </div>
           </TabsContent>
 
           <TabsContent value="table" className="mt-6">
