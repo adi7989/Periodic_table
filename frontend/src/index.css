@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -9,120 +9,129 @@
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 40% 98%;
- 
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 20% 98%;
+
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
- 
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 262.1 83.3% 57.8%;
+
+    --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
- 
+
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 210 20% 98%;
 
-    --success: 142.1 76.2% 36.3%;
-    --success-foreground: 355.7 100% 97.3%;
+    --border: 214.3 31.6% 91.4%;
+    --input: 214.3 31.6% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 262.1 83.3% 57.8%;
- 
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
- 
+    --foreground: 210 20% 98%;
+
     --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
- 
+    --card-foreground: 210 20% 98%;
+
     --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
- 
-    --primary: 262.1 83.3% 57.8%;
+    --popover-foreground: 210 20% 98%;
+
+    --primary: 210 20% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
- 
+
     --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
- 
+    --secondary-foreground: 210 20% 98%;
+
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
- 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
 
-    --success: 142.1 70.6% 45.3%;
-    --success-foreground: 144.9 80.4% 10%;
- 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 20% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 262.1 83.3% 57.8%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Custom styles for the periodic table */
-.perspective-1000 {
+/* Custom styles for element colors */
+.alkali-metal { @apply bg-red-300 dark:bg-red-700; }
+.alkaline-earth-metal { @apply bg-orange-300 dark:bg-orange-700; }
+.transition-metal { @apply bg-yellow-300 dark:bg-yellow-700; }
+.post-transition-metal { @apply bg-green-300 dark:bg-green-700; }
+.metalloid { @apply bg-teal-300 dark:bg-teal-700; }
+.nonmetal { @apply bg-blue-300 dark:bg-blue-700; }
+.noble-gas { @apply bg-purple-300 dark:bg-purple-700; }
+.lanthanide { @apply bg-pink-300 dark:bg-pink-700; }
+.actinide { @apply bg-indigo-300 dark:bg-indigo-700; }
+.unknown { @apply bg-gray-300 dark:bg-gray-700; }
+
+/* Styles for the flashcard flip animation */
+.flip-card {
   perspective: 1000px;
 }
 
-.rotate-y-0 {
-  transform: rotateY(0deg);
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
 }
 
-.rotate-y-180 {
+.flip-card.flipped .flip-card-inner {
   transform: rotateY(180deg);
 }
 
-.backface-hidden {
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
 }
 
-/* Animation for element cards */
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.flip-card-front {
+  background-color: var(--card); /* Use CSS variable for background */
+  color: var(--card-foreground); /* Use CSS variable for text color */
 }
 
-.float-animation {
-  animation: float 3s ease-in-out infinite;
+.flip-card-back {
+  background-color: var(--secondary); /* Use CSS variable for background */
+  color: var(--secondary-foreground); /* Use CSS variable for text color */
+  transform: rotateY(180deg);
 }
 
-/* Custom button variants */
-@layer components {
-  .btn-success {
-    @apply bg-green-500 text-white hover:bg-green-600;
-  }
-  
-  .btn-warning {
-    @apply bg-yellow-500 text-white hover:bg-yellow-600;
-  }
+/* Dimming effect for filtered elements */
+.dimmed {
+  opacity: 0.3;
+  pointer-events: none; /* Disable clicks on dimmed elements */
 }

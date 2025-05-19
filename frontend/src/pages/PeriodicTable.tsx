@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Search, Beaker, BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils'; // Import cn for conditional class joining
 
 const PeriodicTable = () => {
   const [selectedElement, setSelectedElement] = useState<ElementType | null>(null);
@@ -27,7 +28,7 @@ const PeriodicTable = () => {
   };
 
   const filteredElements = elements.filter(element => {
-    const matchesSearch = element.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = element.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           element.symbol.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'all' || element.category === filterCategory;
     return matchesSearch && matchesCategory;
@@ -88,11 +89,11 @@ const PeriodicTable = () => {
 
         <div className="mb-6 flex flex-wrap gap-2 justify-center">
           {Object.entries(categoryColors).map(([category, color]) => (
-            <Badge 
+            <Badge
               key={category}
               variant="outline"
               className="cursor-pointer"
-              style={{ 
+              style={{
                 backgroundColor: filterCategory === category ? color : 'transparent',
                 borderColor: color,
                 color: filterCategory === category ? '#000' : 'inherit'
@@ -109,10 +110,10 @@ const PeriodicTable = () => {
             <TabsTrigger value="grid">Grid View</TabsTrigger>
             <TabsTrigger value="table">Table View</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="grid" className="mt-6">
-            <motion.div 
-              className="flex flex-wrap justify-center gap-1"
+            <motion.div
+              className="flex flex-wrap justify-center gap-1" // Reverted to flexbox layout
               variants={{
                 hidden: { opacity: 0 },
                 show: {
@@ -125,16 +126,16 @@ const PeriodicTable = () => {
               initial="hidden"
               animate="show"
             >
-              {filteredElements.map(element => (
-                <PeriodicElement 
-                  key={element.atomicNumber} 
-                  element={element} 
-                  onClick={handleElementClick} 
+              {filteredElements.map(element => ( // Iterate through filtered elements
+                <PeriodicElement
+                  key={element.atomicNumber}
+                  element={element}
+                  onClick={handleElementClick}
                 />
               ))}
             </motion.div>
           </TabsContent>
-          
+
           <TabsContent value="table" className="mt-6">
             <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -149,8 +150,8 @@ const PeriodicTable = () => {
                 </thead>
                 <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                   {filteredElements.map(element => (
-                    <tr 
-                      key={element.atomicNumber} 
+                    <tr
+                      key={element.atomicNumber}
                       className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
                       onClick={() => handleElementClick(element)}
                     >
@@ -160,7 +161,7 @@ const PeriodicTable = () => {
                       <td className="px-4 py-3 whitespace-nowrap">{element.name}</td>
                       <td className="px-4 py-3 whitespace-nowrap">{element.atomicNumber}</td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span 
+                        <span
                           className="px-2 py-1 rounded-full text-xs"
                           style={{ backgroundColor: categoryColors[element.category as keyof typeof categoryColors] }}
                         >
@@ -177,10 +178,10 @@ const PeriodicTable = () => {
         </Tabs>
       </motion.div>
 
-      <ElementDetailsModal 
-        element={selectedElement} 
-        isOpen={isModalOpen} 
-        onClose={closeModal} 
+      <ElementDetailsModal
+        element={selectedElement}
+        isOpen={isModalOpen}
+        onClose={closeModal}
       />
     </div>
   );
