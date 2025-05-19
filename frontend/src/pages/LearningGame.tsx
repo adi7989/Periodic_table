@@ -5,7 +5,7 @@ import { elements, Element } from '@/data/periodicTableData';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Check, X, Trophy, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Check, X, Trophy, RefreshCw, ArrowRight, SkipForward } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
@@ -145,13 +145,12 @@ const LearningGame = () => {
     }
 
     setQuestionsAnswered(prev => prev + 1);
+  };
 
-    // Move to next question after a delay
-    setTimeout(() => {
-      setSelectedAnswer(null);
-      setIsCorrect(null);
-      setCurrentQuestion(generateQuestion());
-    }, 1500);
+  const handleNextQuestion = () => {
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    setCurrentQuestion(generateQuestion());
   };
 
   const resetQuiz = () => {
@@ -199,51 +198,58 @@ const LearningGame = () => {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentElementIndex + (isFlipped ? '-flipped' : '')}
-                  initial={{ opacity: 0, rotateY: isFlipped ? 180 : 0 }}
-                  animate={{ opacity: 1, rotateY: isFlipped ? 180 : 0 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
                   className="perspective-1000 w-full max-w-md h-64 mb-8 cursor-pointer"
                   onClick={() => setIsFlipped(!isFlipped)}
-                  style={{ transformStyle: 'preserve-3d' }}
                 >
                   {currentElement && (
-                    <div
-                      className="w-full h-full rounded-xl shadow-xl p-6 flex flex-col justify-center items-center relative"
-                      style={{
-                        backfaceVisibility: 'hidden',
-                        transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                        position: isFlipped ? 'absolute' : 'relative',
-                        top: 0,
-                        backgroundColor: isFlipped ? '#f8f9fa' : '#ffffff',
-                        border: '1px solid #e2e8f0'
-                      }}
-                    >
-                      {!isFlipped ? (
-                        <>
-                          <div className="absolute top-4 left-4 text-sm text-gray-500">
-                            {currentElementIndex + 1}/{shuffledElements.length}
-                          </div>
-                          <div className="text-6xl font-bold mb-2">{currentElement.symbol}</div>
-                          <div className="text-xl">{currentElement.name}</div>
-                          <div className="mt-4">
-                            <Badge>{currentElement.category}</Badge>
-                          </div>
-                          <div className="text-sm text-gray-500 mt-4">Click to flip</div>
-                        </>
-                      ) : (
-                        <div className="transform rotate-y-180 p-4 text-center">
-                          <h3 className="text-xl font-bold mb-4">{currentElement.name} Properties</h3>
-                          <div className="grid grid-cols-2 gap-2 text-sm text-left">
-                            <div>Atomic Number: <span className="font-medium">{currentElement.atomicNumber}</span></div>
-                            <div>Atomic Mass: <span className="font-medium">{currentElement.atomicMass}</span></div>
-                            <div>Group: <span className="font-medium">{currentElement.group}</span></div>
-                            <div>Period: <span className="font-medium">{currentElement.period}</span></div>
-                            <div>Block: <span className="font-medium">{currentElement.block}</span></div>
-                            <div>Electron Config: <span className="font-medium">{currentElement.electronConfiguration}</span></div>
-                          </div>
+                    <div className="relative w-full h-full">
+                      {/* Front of card */}
+                      <div
+                        className={`absolute w-full h-full rounded-xl shadow-xl p-6 flex flex-col justify-center items-center transition-all duration-500 backface-hidden ${
+                          isFlipped ? 'rotate-y-180 opacity-0' : 'rotate-y-0 opacity-100'
+                        }`}
+                        style={{
+                          backgroundColor: '#ffffff',
+                          border: '1px solid #e2e8f0',
+                          backfaceVisibility: 'hidden'
+                        }}
+                      >
+                        <div className="absolute top-4 left-4 text-sm text-gray-500">
+                          {currentElementIndex + 1}/{shuffledElements.length}
                         </div>
-                      )}
+                        <div className="text-6xl font-bold mb-2">{currentElement.symbol}</div>
+                        <div className="text-xl">{currentElement.name}</div>
+                        <div className="mt-4">
+                          <Badge>{currentElement.category}</Badge>
+                        </div>
+                        <div className="text-sm text-gray-500 mt-4">Click to flip</div>
+                      </div>
+
+                      {/* Back of card */}
+                      <div
+                        className={`absolute w-full h-full rounded-xl shadow-xl p-6 flex flex-col justify-center items-center transition-all duration-500 backface-hidden ${
+                          isFlipped ? 'rotate-y-0 opacity-100' : 'rotate-y-180 opacity-0'
+                        }`}
+                        style={{
+                          backgroundColor: '#f8f9fa',
+                          border: '1px solid #e2e8f0',
+                          backfaceVisibility: 'hidden'
+                        }}
+                      >
+                        <h3 className="text-xl font-bold mb-4">{currentElement.name} Properties</h3>
+                        <div className="grid grid-cols-2 gap-2 text-sm text-left">
+                          <div>Atomic Number: <span className="font-medium">{currentElement.atomicNumber}</span></div>
+                          <div>Atomic Mass: <span className="font-medium">{currentElement.atomicMass}</span></div>
+                          <div>Group: <span className="font-medium">{currentElement.group}</span></div>
+                          <div>Period: <span className="font-medium">{currentElement.period}</span></div>
+                          <div>Block: <span className="font-medium">{currentElement.block}</span></div>
+                          <div>Electron Config: <span className="font-medium">{currentElement.electronConfiguration}</span></div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </motion.div>
@@ -343,12 +349,39 @@ const LearningGame = () => {
                             </Button>
                           ))}
                         </div>
+
+                        {/* Next Question Button */}
+                        {selectedAnswer && questionsAnswered < 10 && (
+                          <div className="mt-6 flex justify-center">
+                            <Button
+                              onClick={handleNextQuestion}
+                              className="bg-purple-600 hover:bg-purple-700 flex items-center gap-2"
+                            >
+                              Next Question
+                              <ArrowRight size={16} />
+                            </Button>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
 
                     <div className="mb-4">
                       <Progress value={(questionsAnswered / 10) * 100} className="h-2" />
                     </div>
+
+                    {/* Skip Question Button */}
+                    {!selectedAnswer && (
+                      <div className="flex justify-end">
+                        <Button
+                          variant="ghost"
+                          onClick={handleNextQuestion}
+                          className="text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                        >
+                          Skip
+                          <SkipForward size={14} />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -87,8 +87,16 @@
   perspective: 1000px;
 }
 
+.rotate-y-0 {
+  transform: rotateY(0deg);
+}
+
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
 
 /* Animation for element cards */
